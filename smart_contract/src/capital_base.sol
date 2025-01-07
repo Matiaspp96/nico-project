@@ -6,6 +6,12 @@ import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 
+/**
+ * @dev Contract deployed on Base Mainnet
+ * @notice You can view the deployed contract at:
+ * https://basescan.org/address/0xa660002086c4d720bE4F1Af27Fc423431b1cf46b#code
+*/
+
 // Interface for Uniswap V3 Factory contract to create and manage liquidity pools
 interface IUniswapV3Factory {
     function createPool(address tokenA, address tokenB, uint24 fee) external returns (address pool);

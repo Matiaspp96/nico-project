@@ -4,6 +4,12 @@ pragma solidity ^0.8.25;
 import {Test, console2} from "forge-std/Test.sol";
 import {CapitalDeployer, CustomERC20} from "../src/capital__lens.sol";
 
+/**
+ * @dev Contract deployed on Lens Sepolia
+ * @notice You can view the deployed contract at:
+ * https://block-explorer.testnet.lens.dev/address/0x873d5852894f68D6343d0E673EaE6486E317D246#write
+*/
+
 contract CapitalDeployerTest is Test {
     CapitalDeployer public deployer;
     address public owner;

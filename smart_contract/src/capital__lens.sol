@@ -6,6 +6,12 @@ import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 
+/**
+ * @dev Contract deployed on Lens Sepolia
+ * @notice You can view the deployed contract at:
+ * https://block-explorer.testnet.lens.dev/address/0x873d5852894f68D6343d0E673EaE6486E317D246#write
+*/
+
 // Custom ERC20 token contract with initial supply minting
 contract CustomERC20 is ERC20 {
     string public imageURL;

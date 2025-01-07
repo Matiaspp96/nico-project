@@ -1,66 +1,85 @@
-## Foundry
+### CapitalDeployer Contract Suite
 
-**Foundry is a blazing fast, portable and modular toolkit for Ethereum application development written in Rust.**
+---
 
-Foundry consists of:
+#### **General Description**
 
--   **Forge**: Ethereum testing framework (like Truffle, Hardhat and DappTools).
--   **Cast**: Swiss army knife for interacting with EVM smart contracts, sending transactions and getting chain data.
--   **Anvil**: Local Ethereum node, akin to Ganache, Hardhat Network.
--   **Chisel**: Fast, utilitarian, and verbose solidity REPL.
+This repository contains the `CapitalDeployer` and `CustomERC20` contracts, designed for the creation, management, and deployment of custom ERC20 tokens. The contracts are geared towards facilitating the creation of tokens with associated images, managing treasuries, handling authorized agents, and performing liquidity-related operations. 
 
-## Documentation
+The main contract is deployed on multiple networks, including Base Mainnet and Lens Sepolia. 
 
-https://book.getfoundry.sh/
+- **[Base Mainnet Deployment](https://basescan.org/address/0xa660002086c4d720bE4F1Af27Fc423431b1cf46b#code)**  
+- **[Lens Sepolia Deployment](https://block-explorer.testnet.lens.dev/address/0x873d5852894f68D6343d0E673EaE6486E317D246#write)**  
 
-## Usage
+---
 
-### Build
+#### **Technologies Used**
 
-```shell
-$ forge build
-```
+- **Solidity (`^0.8.25`)**: For the implementation of the contracts.
+- **OpenZeppelin**: Provides standard functionalities for ERC20 and access control.
+- **Uniswap**: For liquidity management and swaps.
+- **Foundry**: For unit tests.
+- **Lens Sepolia and Base Mainnet**: Blockchain networks used for deployment.
 
-### Test
+---
 
-```shell
-$ forge test
-```
+#### **Main Contract Structure**
 
-### Format
+##### **CustomERC20**
+- A custom ERC20 token contract that allows creating tokens with a defined initial supply and associating them with an image (URL).
 
-```shell
-$ forge fmt
-```
+##### **CapitalDeployer**
+- The main contract that manages the creation of ERC20 tokens and their integration with treasuries.
+- Includes functionalities for:
+  - Creating and registering tokens.
+  - Handling authorized agents.
+  - Withdrawing funds from the contract.
+  - Querying details of registered tokens.
 
-### Gas Snapshots
+---
 
-```shell
-$ forge snapshot
-```
+#### **Functionality of `deployFunds`**
 
-### Anvil
+The `deployFunds` function is the core of the contract. It is used to deploy a new ERC20 token with an associated image and register the token information in the main contract.
 
-```shell
-$ anvil
-```
+##### **Parameters**
+- `name` (string): Name of the token.
+- `symbol` (string): Symbol of the token.
+- `imageURL` (string): URL of the associated image.
 
-### Deploy
+##### **Process**
+1. Validates that the input parameters are not empty.
+2. Deploys a new `CustomERC20` contract with the provided name, symbol, and URL.
+3. Registers the token information, including its creator, decimals, total supply, and image URL.
+4. Emits a `TokenDeployed` event.
 
-```shell
-$ forge script script/Counter.s.sol:CounterScript --rpc-url <your_rpc_url> --private-key <your_private_key>
-```
+##### **Results**
+- A custom ERC20 token is deployed with the specified parameters.
+- The contract stores token information, accessible through its address.
 
-### Cast
+---
 
-```shell
-$ cast <subcommand>
-```
+#### **Important Events**
 
-### Help
+- **`TokenDeployed`**: Emits information about a newly created token.
+- **`AgentAdded` and `AgentRemoved`**: Indicate changes in the list of authorized agents.
 
-```shell
-$ forge --help
-$ anvil --help
-$ cast --help
-```
+---
+
+#### **Key Functions**
+
+- **Agent Management**
+  - `addAgent`: Adds a new authorized agent.
+  - `removeAgent`: Removes an authorized agent.
+  - `onlyAgent` (modifier): Restricts specific functions to authorized agents.
+
+- **Token Management**
+  - `deployFunds`: Deploys a new ERC20 token and registers its data.
+  - `getTokenDetails`: Returns details of a registered token.
+  - `getAllTokenAddresses`: Lists all addresses of registered tokens.
+
+- **Funds Management**
+  - `withdraw`: Allows agents to withdraw funds from the contract.
+  - `balance`: Queries the contract balance for a specific token.
+
+---
