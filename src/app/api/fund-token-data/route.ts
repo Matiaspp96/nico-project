@@ -222,7 +222,10 @@ export async function GET(req: Request) {
         return NextResponse.json(tokenDataToWriteForFile, { status: 200 });
       } catch (error) {
         console.error("Error writing token data to file:", error);
-        return { error: "Error writing token data to file" };
+        return NextResponse.json(
+          { error: "Error writing token data to file" },
+          { status: 500 }
+        );
       }
     }
 
@@ -288,8 +291,11 @@ export async function GET(req: Request) {
           );
           return NextResponse.json(tokenDataToWriteForFile, { status: 200 });
         } catch (error) {
-          console.error("Error writing token data to file:", error);
-          return { error: "Error writing token data to file" };
+          console.error("Error in GET /api/fund-token-data", error);
+          return NextResponse.json(
+            { error: FundTokenDataError.UNKNOWN_ERROR },
+            { status: 500 }
+          );
         }
       }
     }

@@ -28,7 +28,7 @@ export function useLensAuth() {
   const [loading, setLoading] = useState(false)
   const { toast } = useToast()
 
-  const handleApiResponse = async <T,>(response: Response): Promise<T> => {
+  const handleApiResponse = useCallback(async <T,>(response: Response): Promise<T> => {
     const data = await response.json()
     
     if (!response.ok) {
@@ -60,9 +60,9 @@ export function useLensAuth() {
     }
 
     return data as T
-  }
+  }, [toast])
 
-  const getChallenge = async (address: string) => {
+  const getChallenge = useCallback(async (address: string) => {
     const response = await fetch('/api/lens/challenge', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -74,9 +74,9 @@ export function useLensAuth() {
       id: string
       profile: Profile
     }>(response)
-  }
+  }, [handleApiResponse])
 
-  const authenticateWithLens = async (params: {
+  const authenticateWithLens = useCallback(async (params: {
     id: string
     signature: string
     address: string
@@ -96,9 +96,9 @@ export function useLensAuth() {
       }
       profile: Profile
     }>(response)
-  }
+  }, [handleApiResponse])
 
-  const broadcastSignless = async (params: {
+  const broadcastSignless = useCallback(async (params: {
     id: string
     signature: string
   }) => {
@@ -113,7 +113,7 @@ export function useLensAuth() {
       txHash?: string
       txId?: string
     }>(response)
-  }
+  }, [handleApiResponse])
 
   const authenticate = useCallback(async () => {
     if (!address) {
@@ -188,7 +188,7 @@ export function useLensAuth() {
     } finally {
       setLoading(false)
     }
-  }, [address, signMessageAsync, toast])
+  }, [address, signMessageAsync, toast, getChallenge, authenticateWithLens, broadcastSignless])
 
   return {
     authenticate,

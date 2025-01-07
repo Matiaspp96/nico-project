@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect , useCallback} from "react";
 import { useLensAuth } from "@/hooks/useLensAuth";
 import { useAccount } from "wagmi";
 import { useAppKit } from "@reown/appkit/react";
@@ -8,6 +8,7 @@ import { useToast } from "@/components/shadcn/use-toast";
 import { Button } from "@/components/shadcn/button";
 import { Loader2 } from "lucide-react";
 import { Textarea } from "../shadcn/textarea";
+import Image from 'next/image';
 
 interface Comment {
   id: string;
@@ -49,10 +50,14 @@ export function CommentsSection({ tokenAddress }: CommentsSectionProps) {
 
   // Cargar comentarios al montar el componente y cuando cambie el tokenAddress
   useEffect(() => {
-    loadComments();
+    const load = async () => {
+      await loadComments();
+    };
+    load();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tokenAddress]);
 
-  const loadComments = async (cursor?: string) => {
+  const loadComments = useCallback(async (cursor?: string) => {
     try {
       setLoadingComments(true);
       const url = `/api/lens/comments/${tokenAddress}${cursor ? `?cursor=${cursor}` : ''}`;
@@ -75,7 +80,7 @@ export function CommentsSection({ tokenAddress }: CommentsSectionProps) {
     } finally {
       setLoadingComments(false);
     }
-  };
+  }, [tokenAddress, toast]);
 
   const handleConnect = async () => {
     try {
@@ -94,7 +99,7 @@ export function CommentsSection({ tokenAddress }: CommentsSectionProps) {
     }
   };
 
-  const handleSubmitComment = async (e: React.FormEvent) => {
+  const handleSubmitComment = useCallback(async (e: React.FormEvent) => {
     e.preventDefault();
     if (!comment.trim() || !profile || isPosting) return;
 
@@ -123,7 +128,6 @@ export function CommentsSection({ tokenAddress }: CommentsSectionProps) {
       });
 
       setComment("");
-      // Recargar comentarios después de publicar
       await loadComments();
     } catch (error) {
       console.error("Error posting comment:", error);
@@ -136,7 +140,7 @@ export function CommentsSection({ tokenAddress }: CommentsSectionProps) {
     } finally {
       setIsPosting(false);
     }
-  };
+  }, [comment, profile, isPosting, tokenAddress, toast, loadComments]);
 
   return (
     <section className="p-6 bg-white shadow-lg rounded-lg border border-gray-200">
@@ -152,11 +156,13 @@ export function CommentsSection({ tokenAddress }: CommentsSectionProps) {
         ) : profile ? (
           <div className="flex items-center gap-2">
             {profile.picture && (
-              <img
-                src={profile.picture}
-                alt={profile.handle}
-                className="w-8 h-8 rounded-full"
-              />
+              <Image
+  src={profile.picture}
+  alt={profile.handle}
+  width={32}
+  height={32}
+  className="rounded-full"
+/>
             )}
             <span className="font-medium">{profile.handle}</span>
           </div>
@@ -207,11 +213,13 @@ export function CommentsSection({ tokenAddress }: CommentsSectionProps) {
               <div key={comment.id} className="p-4 border rounded-lg">
                 <div className="flex items-center gap-2 mb-2">
                   {comment.author.picture && (
-                    <img
-                      src={comment.author.picture}
-                      alt={comment.author.handle}
-                      className="w-8 h-8 rounded-full"
-                    />
+                    <Image
+                    src={comment.author.picture}
+                    alt={comment.author.handle}
+                    width={32}
+                    height={32}
+                    className="rounded-full"
+                  />
                   )}
                   <div>
                     <p className="font-medium">
